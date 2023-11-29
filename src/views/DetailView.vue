@@ -26,8 +26,8 @@
                 <p class="movie-info__release-date">개봉일 : {{ selectedMovie.releaseDate }}</p>
                 <p class="movie-info__vote-count">평점 : {{ selectedMovie.averageRating }}</p>
                 <div class="characters">
-                    <div v-for="character in selectedMovie.characters" :key="character.characterName" class="character">
-                        <img :src="character.characterImage" :alt="character.characterName">
+                    <div class="character" v-for="character in selectedMovie.characters" :key="character.characterName">
+                        <img :src="character.profilePath" :alt="character.characterName">
                         <p>{{ character.characterName }}</p>
                     </div>
                 </div>
@@ -49,7 +49,7 @@ export default {
             averageRating: '',
             characters: [],
             bannerUrl: '',
-            poster: ''
+            poster: '',
         });
         const route = useRoute();
 
@@ -59,25 +59,32 @@ export default {
             const url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=ko-KR`;
             const creditsUrl = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${apiKey}&language=ko-KR`
 
-            fetch(url)
-                .then((response) => response.json())
-                .then((res) => {
-                    console.log(res);
+            Promise.all([
+                fetch(url).then((response) => response.json()),
+                fetch(creditsUrl).then((response) => response.json())
+            ])
+                .then(([movieRes, creditsRes]) => {
+                    console.log(movieRes);
+                    console.log(creditsRes);
+
+                    const selectedCharacters = creditsRes.cast.slice(0, 5).map((character) => ({
+                        characterName: character.character,
+                        profilePath: 'https://image.tmdb.org/t/p/original/' + character.profile_path
+                    }));
+
                     selectedMovie.value = {
-                        title: res.title,
-                        overview: res.overview,
-                        releaseDate: res.release_date,
-                        averageRating: res.vote_average,
-                        characters: res.characters,
-                        bannerUrl: 'https://image.tmdb.org/t/p/original/' + res.backdrop_path,
-                        poster: 'https://image.tmdb.org/t/p/original/' + res.poster_path
+                        title: movieRes.title,
+                        overview: movieRes.overview,
+                        releaseDate: movieRes.release_date,
+                        averageRating: movieRes.vote_average,
+                        bannerUrl: 'https://image.tmdb.org/t/p/original/' + movieRes.backdrop_path,
+                        poster: 'https://image.tmdb.org/t/p/original/' + movieRes.poster_path,
+                        characters: selectedCharacters
                     };
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                 });
-
-
         };
 
         onMounted(() => {
