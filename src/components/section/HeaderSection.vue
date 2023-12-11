@@ -12,8 +12,8 @@ export default {
                 overview: '',
                 releaseDate: '',
                 averageRating: '',
-
-            }
+            },
+            selectedPoster: null
         };
     },
     created() {
