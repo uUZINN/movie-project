@@ -4,12 +4,12 @@
 VUE, TMBD API를 이용하여 나만의 영화 추천 사이트를 제작하였습니다.
 
 ## 설치
-vue 설치
-`npm install -g @vue/cli`
-sass를 설치
-`npm install sass`
-react-router-dom 설치
-`npm install axios`
+vue 설치<br>
+`npm install -g @vue/cli`<br>
+sass를 설치<br>
+`npm install sass`<br>
+react-router-dom 설치<br>
+`npm install axios`<br>
 
 ### TMDB
 https://www.themoviedb.org/?language=ko-KR<br>
